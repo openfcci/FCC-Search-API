@@ -1,0 +1,463 @@
+{
+	"variables": [],
+	"info": {
+		"name": "FCC Search API Examples",
+		"_postman_id": "ceb9fe22-edf1-fc39-c09f-6af320d9e398",
+		"description": "Search examples for the HackFargo Civic Hackathon - 2016",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Search Examples -01- URI Search API",
+			"description": "",
+			"item": [
+				{
+					"name": "URI Search: Basic Example",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search?q=weezer",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Search URI\n\nhttps://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html"
+					},
+					"response": []
+				},
+				{
+					"name": "URI Search: Advanced Example",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search?q=title:weezer&sort=post_date:desc&size=2&fields=post_date,title,excerpt",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Search URI\n\nhttps://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search Examples -02- Query DSL",
+			"description": "",
+			"item": [
+				{
+					"name": "Search: Match All",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"match_all\": {}\n  },\n  \"size\": 10\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search: Match All (Return \"title\" only)",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search?pretty",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"match_all\": {}\n  },\n  \"size\": 10,\n  \"_source\": [\n    \"title\"\n  ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search: Match All (Return \"title\" only, Sort Newest)",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search?pretty",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"match_all\": {}\n  },\n  \"size\": 10,\n  \"_source\": [\n    \"title\", \"post_date\"\n  ],\n\t\"sort\": [\n    {\n      \"created\": {\n        \"order\": \"desc\"\n      }\n    }\n  ]\n}"
+						},
+						"description": "Sorts by Newest."
+					},
+					"response": []
+				},
+				{
+					"name": "Search: Match All (Return \"title\" only, Sort Oldest)",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search?pretty",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"match_all\": {}\n  },\n  \"size\": 10,\n  \"_source\": [\n    \"title\", \"post_date\"\n  ],\n\t\"sort\": [\n    {\n      \"created\": {\n        \"order\": \"asc\"\n      }\n    }\n  ]\n}"
+						},
+						"description": "Sorts by Oldest."
+					},
+					"response": []
+				},
+				{
+					"name": "Search: Match All (Return Specific Fields Only)",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"match_all\": {}\n  },\n  \"size\": 10,\n  \"_source\": [\n    \"title\", \"url\",\"type\", \"post_date\", \"author.realname\", \"excerpt\", \"search_thumb\"\n  ],\n  \"sort\": [\n    {\n      \"created\": {\n        \"order\": \"desc\"\n      }\n    }\n  ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search: Multi-match - Title and Body",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"multi_match\": {\n      \"query\": \"weezer\",\n      \"fields\": [\n        \"title^2\",\n        \"body.value\"\n      ]\n    }\n  },\n  \"size\": 10\n}"
+						},
+						"description": "Search for articles about Weezer.\n\n=W= Weezer =W="
+					},
+					"response": []
+				},
+				{
+					"name": "Search: Query String - Title search example (basic)",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"query_string\": {\n      \"query\": \"weezer\",\n      \"fields\": [\n        \"title\"\n      ]\n    }\n  }\n}"
+						},
+						"description": "Search for articles about Weezer.\n\n=W= Weezer =W="
+					},
+					"response": []
+				},
+				{
+					"name": "Search: Query String - Title search example (intermediate)",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"query_string\": {\n      \"query\": \"weezer\",\n      \"fields\": [\n        \"title\"\n      ]\n    }\n  },\n  \"size\": 10,\n  \"_source\": [\n    \"title\",\n    \"post_date\",\n    \"excerpt\"\n  ],\n  \"sort\": [\n    {\n      \"created\": {\n        \"order\": \"desc\"\n      }\n    }\n  ]\n}"
+						},
+						"description": "Search for articles about Weezer.\n\n=W= Weezer =W="
+					},
+					"response": []
+				},
+				{
+					"name": "Search: Bool Multi-Match (advanced)",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"function_score\": {\n      \"query\": {\n        \"bool\": {\n          \"should\": [\n            {\n              \"multi_match\": {\n                \"query\": \"{{search-terms}}\",\n                \"type\": \"phrase\",\n                \"fields\": [\n                  \"title^2\",\n                  \"body.value\",\n                  \"author.realname\",\n                  \"category.categories.name\",\n                  \"tags.name\"\n                ],\n                \"boost\": 4,\n                \"fuzziness\": 0\n              }\n            },\n            {\n              \"multi_match\": {\n                \"query\": \"{{search-terms}}\",\n                \"fields\": [\n                  \"title^2\",\n                  \"body.value\",\n                  \"author.realname\",\n                  \"category.categories.name\",\n                  \"tags.name\"\n                ],\n                \"boost\": 2,\n                \"fuzziness\": 0,\n                \"operator\": \"and\"\n              }\n            },\n            {\n              \"multi_match\": {\n                \"fields\": [\n                  \"title^2\",\n                  \"body.value\",\n                  \"author.realname\",\n                  \"category.categories.name\",\n                  \"tags.name\"\n                ],\n                \"query\": \"{{search-terms}}\",\n                \"fuzziness\": 1\n              }\n            }\n          ]\n        }\n      },\n      \"functions\": [\n        {\n          \"gauss\": {\n            \"created\": {\n              \"scale\": \"7d\",\n              \"offset\": \"0d\",\n              \"decay\": 0.8\n            }\n          }\n        }\n      ],\n      \"score_mode\": \"multiply\"\n    }\n  },\n  \"size\": 10,\n  \"from\": 0\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search Examples -03- Filtered Queries",
+			"description": "",
+			"item": [
+				{
+					"name": "Search: All Articles with Videos",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"function_score\": {\n      \"query\": {\n        \"filtered\": {\n          \"query\": {\n            \"match_all\": {}\n          },\n          \"filter\": {\n            \"exists\": {\n              \"field\": \"video\"\n            }\n          }\n        }\n      }\n    }\n  },\n  \"size\": \"{{size}}\",\n  \"from\": 0\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search: All Articles with Audio",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"function_score\": {\n      \"query\": {\n        \"filtered\": {\n          \"query\": {\n            \"match_all\": {}\n          },\n          \"filter\": {\n            \"exists\": {\n              \"field\": \"audio\"\n            }\n          }\n        }\n      }\n    }\n  },\n  \"size\": \"{{size}}\",\n  \"from\": 0\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search: All Articles with Polls",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"function_score\": {\n      \"query\": {\n        \"filtered\": {\n          \"query\": {\n            \"match_all\": {}\n          },\n          \"filter\": {\n            \"exists\": {\n              \"field\": \"poll\"\n            }\n          }\n        }\n      }\n    }\n  },\n  \"size\": \"{{size}}\",\n  \"from\": 0\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Search: All Drafts",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        {\n          \"match\": {\n            \"title\": \"police\"\n          }\n        },\n        {\n          \"match\": {\n            \"body.value\": \"fargo\"\n          }\n        }\n      ],\n      \"filter\": [\n        {\n          \"term\": {\n            \"status\": \"1\"\n          }\n        },\n        {\n          \"exists\": {\n            \"field\": \"video\"\n          }\n        },\n        {\n          \"range\": {\n            \"post_date\": {\n              \"gte\": \"2016-01-01\"\n            }\n          }\n        }\n      ]\n    }\n  }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search Examples -04- Individual Documents",
+			"description": "",
+			"item": [
+				{
+					"name": "Documents: Return a specific document",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/{{document-type}}/{{document-id}}",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Query a Document\n\nhttps://www.elastic.co/guide/en/elasticsearch/reference/current/_index_and_query_a_document.html"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search Examples -05- Aggregations",
+			"description": "",
+			"item": [
+				{
+					"name": "Aggregations: Categories",
+					"request": {
+						"url": "{{base_uri}}/{{index-name}}/_search",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"aggs\": {\n    \"category.name.raw\": {\n      \"terms\": {\n        \"field\": \"category.name.raw\",\n        \"size\": 1000\n      }\n    },\n    \"category.name_count\": {\n      \"cardinality\": {\n        \"field\": \"category.name.raw\"\n      }\n    }\n  },\n  \"size\": 0\n}"
+						},
+						"description": "Returns an aggregation of all article categories.\n\nNOTE: `\"size\": 0` is to prevent articles from being returned along with the aggregation data."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Basic Query: 10 most recent articles",
+			"request": {
+				"url": "{{base_uri}}/{{index-name}}/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"sort\": [\n    {\n      \"created\": \"desc\"\n    }\n  ],\n  \"size\": 10\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Advanced Query: Inforum.com articles with video in 2016 (by search term)",
+			"request": {
+				"url": "{{base_uri}}/{{index-name}}/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        { \"match\": { \"title\": \"police\" } },\n        { \"match\": { \"body.value\": \"gun\" } }\n      ],\n      \"filter\": [\n        { \"term\": { \"status\": \"1\" } },\n        { \"term\": { \"domains\": \"15\" } },\n        { \"exists\": { \"field\": \"video\" } },\n        { \"range\": {  \"post_date\": { \"gte\": \"2016-01-01 00:00:00\" } } }\n      ]\n    }\n  }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Inforum Default Search Query (by Relevance) ",
+			"request": {
+				"url": "{{base_uri}}/{{index-name}}/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": {\n    \"function_score\": {\n      \"query\": {\n        \"filtered\": {\n          \"query\": {\n            \"multi_match\": {\n              \"query\": \"{{search-terms}}\",\n              \"fields\": [\n                \"title^2\",\n                \"body.value\",\n                \"author.realname\",\n                \"category.categories.name\",\n                \"tags.name\"\n              ]\n            }\n          },\n          \"filter\": {\n            \"bool\": {\n              \"must\": [\n                {\n                  \"term\": {\n                    \"domains\": \"{{domain-id}}\"\n                  }\n                },\n                {\n                  \"term\": {\n                    \"status\": 1\n                  }\n                }\n              ]\n            }\n          }\n        }\n      },\n      \"functions\": [\n        {\n          \"gauss\": {\n            \"created\": {\n              \"scale\": \"5d\",\n              \"offset\": \"2d\",\n              \"decay\": 0.5\n            }\n          },\n          \"weight\": \"1.5\"\n        }\n      ],\n      \"score_mode\": \"multiply\"\n    }\n  },\n  \"size\": \"{{size}}\",\n  \"from\": 0\n}"
+				},
+				"description": "- Searches for the queried string across the \"title\", \"body\", \"author\", \"category\" and \"tags\" fields.\n  - Title score is boosted x2.\n- Results are filted to only results matching the domain id of the current site\n- Results are sorted by most recent first\n- Ten results are returned\n- Only the \"url\", \"author.name\", \"title\", \"date\", \"body\",  and \"image\" fields are returned to reduct the size of the request."
+			},
+			"response": []
+		},
+		{
+			"name": "Inforum Default Search Query (by Date)",
+			"request": {
+				"url": "{{base_uri}}/{{index-name}}/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": {\n    \"query\": {\n      \"filtered\": {\n        \"query\": {\n          \"multi_match\": {\n            \"query\": \"{{search-terms}}\",\n            \"fields\": [\n              \"title^2\",\n              \"body.value\",\n              \"author.realname\",\n              \"category.categories.name\",\n              \"tags.name\"\n            ]\n          }\n        },\n        \"filter\": {\n          \"bool\": {\n            \"must\": [\n              {\n                \"term\": {\n                  \"domains\": \"{{domain-id}}\"\n                }\n              },\n              {\n                \"term\": {\n                  \"status\": 1\n                }\n              }\n            ]\n          }\n        }\n      }\n    }\n  },\n  \"size\": \"{{size}}\",\n  \"from\": 0,\n  \"sort\": [\n    {\n      \"created\": {\n        \"order\": \"desc\"\n      }\n    }\n  ]\n}"
+				},
+				"description": "- Searches for the queried string across the \"title\", \"body\", \"author\", \"category\" and \"tags\" fields.\n  - Title score is boosted x2.\n- Results are filted to only results matching the domain id of the current site\n- Results are sorted by most recent first\n- Ten results are returned\n- Only the \"url\", \"author.name\", \"title\", \"date\", \"body\",  and \"image\" fields are returned to reduct the size of the request."
+			},
+			"response": []
+		},
+		{
+			"name": "Sift Default Query (with Aggregations)",
+			"request": {
+				"url": "{{base_uri}}/{{index-name}}/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"aggs\": {\n    \"type.raw3\": {\n      \"filter\": {},\n      \"aggs\": {\n        \"type.raw\": {\n          \"terms\": {\n            \"field\": \"type.raw\",\n            \"size\": 50\n          }\n        },\n        \"type.raw_count\": {\n          \"cardinality\": {\n            \"field\": \"type.raw\"\n          }\n        }\n      }\n    },\n    \"newspaper.raw4\": {\n      \"filter\": {},\n      \"aggs\": {\n        \"newspaper.raw\": {\n          \"terms\": {\n            \"field\": \"newspaper.raw\",\n            \"size\": 6\n          }\n        },\n        \"newspaper.raw_count\": {\n          \"cardinality\": {\n            \"field\": \"newspaper.raw\"\n          }\n        }\n      }\n    },\n    \"category.name5\": {\n      \"filter\": {},\n      \"aggs\": {\n        \"category.name\": {\n          \"terms\": {\n            \"field\": \"category.name.raw\",\n            \"size\": 6\n          }\n        },\n        \"category.name_count\": {\n          \"cardinality\": {\n            \"field\": \"category.name.raw\"\n          }\n        }\n      }\n    },\n    \"author.realname.raw6\": {\n      \"filter\": {},\n      \"aggs\": {\n        \"author.realname.raw\": {\n          \"terms\": {\n            \"field\": \"author.realname.raw\",\n            \"size\": 6\n          }\n        },\n        \"author.realname.raw_count\": {\n          \"cardinality\": {\n            \"field\": \"author.realname.raw\"\n          }\n        }\n      }\n    }\n  },\n  \"size\": 10,\n  \"sort\": [\n    {\n      \"created\": \"desc\"\n    }\n  ],\n  \"_source\": [\n    \"title\",\n    \"search_thumb\",\n    \"url\",\n    \"nid\",\n    \"post_date\",\n    \"author\",\n    \"name\",\n    \"newspaper\",\n    \"body\",\n    \"category\"\n  ]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
