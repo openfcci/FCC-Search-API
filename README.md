@@ -40,6 +40,8 @@ Postman is the swiss army knife of API tools, allowing you to design, build, tes
 - Import the collection and environment into Postman and select the `FCC Search API Example Environment`
 - [Postman Documentation](https://www.getpostman.com/docs/)
 
+![Postman Overview](https://raw.githubusercontent.com/openfcci/FCC-Search-API/master/img/postman-overview.png)
+
 ## Elasticsearch Basics
 - [Elasticsearch v2.3 reference and documentation](https://www.elastic.co/guide/en/elasticsearch/reference/2.3/index.html)
 - [Official Elastic Github Repositories](https://github.com/elastic): contains source repos for Elasticsearch and various multi-language clients, SDK's, libraries and plugins.
