@@ -299,4 +299,5 @@ Domain ID | News Property
 
 #### Additional Resources
 - [2016 Civic Engagement Hackathon Overview Documentation](https://docs.google.com/document/d/1138foSkmqywcB4RKaWwErOvi_YH-X0G6UvXFhHW_Yj4/edit#)
+- [JSON Editor Online](http://jsoneditoronline.org/): A very handy online JSON editor and formatter. Useful for adjusting complex JSON structures on the fly.
 - Questions can be sent to ryan.veitch`@`forumcomm.com
